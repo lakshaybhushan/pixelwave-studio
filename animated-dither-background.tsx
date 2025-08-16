@@ -388,7 +388,7 @@ export default function Component() {
               <h3 className="retro-label mb-4">RECORD OUTPUT</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block retro-label mb-2">DURATION {recordingDuration} sec</label>
+                  <label className="block retro-label mb-2">DURATION [{recordingDuration} sec]</label>
                   <input
                     type="range"
                     min="1"
@@ -456,12 +456,12 @@ export default function Component() {
             <p className="text-xs text-amber-400 font-geist-mono tracking-wide">
               &gt; CRAFTED WITH <span className="text-green-400 animate-pulse">💚</span> USING{" "}
               <a
-                href="https://v0.dev"
+                href="https://v0.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-green-400 transition-colors duration-150 ease-out underline decoration-dotted underline-offset-2"
               >
-                v0.dev
+                v0.app
               </a>{" "}
               BY{" "}
               <a
