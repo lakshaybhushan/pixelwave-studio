@@ -11,6 +11,24 @@ export function useVideoRecorder() {
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null)
   const [recordingDuration, setRecordingDuration] = useState(5)
 
+  // Function to get supported MIME type
+  const getSupportedMimeType = useCallback(() => {
+    const types = [
+      'video/mp4; codecs="avc1.42E01E,mp4a.40.2"',
+      "video/mp4",
+      "video/webm; codecs=vp9,opus",
+      "video/webm; codecs=vp8,opus",
+      "video/webm",
+    ]
+
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) {
+        return type
+      }
+    }
+    return "video/webm" // fallback
+  }, [])
+
   const startRecording = useCallback(
     (canvas: HTMLCanvasElement, audioDestination?: MediaStreamAudioDestinationNode, soundEnabled?: boolean) => {
       if (!canvas) return
@@ -19,21 +37,17 @@ export function useVideoRecorder() {
       setVideoBlob(null)
 
       try {
-        // Get canvas stream
-        const canvasStream = canvas.captureStream(60)
-
-        // Combine with audio stream if sound is enabled
+        // MP4/WebM recording
+        const canvasStream = canvas.captureStream(30) // 30 FPS for video
         let combinedStream = canvasStream
 
         if (soundEnabled && audioDestination) {
           const audioStream = audioDestination.stream
-
-          // Create a new MediaStream with both video and audio tracks
           combinedStream = new MediaStream([...canvasStream.getVideoTracks(), ...audioStream.getAudioTracks()])
         }
 
-        const options = { mimeType: "video/webm; codecs=vp8,opus" }
-        const recorder = new MediaRecorder(combinedStream, options)
+        const mimeType = getSupportedMimeType()
+        const recorder = new MediaRecorder(combinedStream, { mimeType })
 
         recorder.ondataavailable = (event) => {
           if (event.data.size > 0) {
@@ -42,7 +56,9 @@ export function useVideoRecorder() {
         }
 
         recorder.onstop = () => {
-          const blob = new Blob(recordedChunksRef.current, { type: "video/webm" })
+          const blob = new Blob(recordedChunksRef.current, {
+            type: mimeType.includes("mp4") ? "video/mp4" : "video/webm",
+          })
           setVideoBlob(blob)
           setIsRecording(false)
           if (recordingTimeoutRef.current) {
@@ -71,11 +87,11 @@ export function useVideoRecorder() {
           recordingDuration * 1000 + 100,
         )
       } catch (error) {
-        console.error("Error starting MediaRecorder:", error)
+        console.error("Error starting recording:", error)
         setIsRecording(false)
       }
     },
-    [recordingDuration],
+    [recordingDuration, getSupportedMimeType],
   )
 
   const downloadVideo = useCallback(() => {
@@ -83,14 +99,21 @@ export function useVideoRecorder() {
       const url = URL.createObjectURL(videoBlob)
       const a = document.createElement("a")
       a.href = url
-      a.download = `animated-dither-${Date.now()}.webm`
+
+      const extension = videoBlob.type.includes("mp4") ? "mp4" : "webm"
+      a.download = `pixelwave-${Date.now()}.${extension}`
+
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      setVideoBlob(null)
     }
   }, [videoBlob])
+
+  const discardVideo = useCallback(() => {
+    setVideoBlob(null)
+    recordedChunksRef.current = []
+  }, [])
 
   const previewVideo = useCallback(() => {
     if (videoBlob) {
@@ -101,6 +124,7 @@ export function useVideoRecorder() {
 
   const clearVideo = useCallback(() => {
     setVideoBlob(null)
+    recordedChunksRef.current = []
   }, [])
 
   return {
@@ -110,6 +134,7 @@ export function useVideoRecorder() {
     setRecordingDuration,
     startRecording,
     downloadVideo,
+    discardVideo,
     previewVideo,
     clearVideo,
   }

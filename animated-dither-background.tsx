@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useRef, useState, useCallback, useEffect } from "react"
-import { Play, Pause, Upload, Video, Download, Volume2, VolumeX, ImageIcon, Power } from "lucide-react"
+import { Play, Pause, Upload, Video, Download, Volume2, VolumeX, ImageIcon, Power, Trash2 } from "lucide-react"
 
 import { useAudioManager } from "./components/audio-manager"
 import { useCanvasRenderer } from "./components/canvas-renderer"
@@ -51,8 +51,16 @@ export default function Component() {
     currentImage,
   })
 
-  const { isRecording, videoBlob, recordingDuration, setRecordingDuration, startRecording, downloadVideo, clearVideo } =
-    useVideoRecorder()
+  const {
+    isRecording,
+    videoBlob,
+    recordingDuration,
+    setRecordingDuration,
+    startRecording,
+    downloadVideo,
+    discardVideo,
+    clearVideo,
+  } = useVideoRecorder()
 
   // Page load animation
   useEffect(() => {
@@ -403,16 +411,27 @@ export default function Component() {
                     </button>
                   </div>
                 ) : videoBlob ? (
-                  <div
-                    className="flex justify-center"
-                    style={{
-                      animation: "zoom-in 0.4s var(--ease-out-cubic) forwards",
-                    }}
-                  >
-                    <button onClick={downloadVideo} className="retro-button px-6 py-3 rounded text-xs w-full">
-                      <Download className="w-4 h-4 mr-2 inline" />
-                      DOWNLOAD
-                    </button>
+                  <div className="space-y-2">
+                    <div
+                      className="flex justify-center"
+                      style={{
+                        animation: "zoom-in 0.4s var(--ease-out-cubic) forwards",
+                      }}
+                    >
+                      <button onClick={downloadVideo} className="retro-button px-6 py-3 rounded text-xs w-full">
+                        <Download className="w-4 h-4 mr-2 inline" />
+                        DOWNLOAD
+                      </button>
+                    </div>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={discardVideo}
+                        className="retro-button px-4 py-2 rounded text-xs w-full bg-red-900/50 border-red-700/50 text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2 inline" />
+                        DISCARD
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex justify-center">
