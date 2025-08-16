@@ -7,9 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Animated Dither",
-  description: "Transform images into mesmerizing animated patterns",
-    generator: 'v0.app'
+  title: "PixelWave Studio",
+  description: "Retro CRT image effects and dithering studio",
+  generator: "v0.app",
 }
 
 export default function RootLayout({
