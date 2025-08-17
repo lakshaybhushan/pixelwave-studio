@@ -163,13 +163,13 @@ export default function Component() {
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-orbitron font-black text-green-400 mb-2 sm:mb-3 tracking-wider">
               PIXELWAVE STUDIO
             </h1>
-            <p className="text-sm sm:text-base lg:text-lg text-amber-400 font-light max-w-2xl font-geist-mono">
+            <p className="text-sm sm:text-base lg:text-lg text-amber-400 font-light max-w-2xl font-mono">
               &gt; Transform images into mesmerizing animated patterns using vintage dithering algorithms
             </p>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs text-amber-400 font-geist-mono">SYSTEM ONLINE</span>
+            <span className="text-xs text-amber-400 font-mono">SYSTEM ONLINE</span>
           </div>
         </div>
 
@@ -201,12 +201,12 @@ export default function Component() {
                   {showSamples ? (
                     <div className="absolute inset-0 p-4 sm:p-6 overflow-y-auto">
                       <div className="text-center mb-4">
-                        <h3 className="text-green-400 font-orbitron font-bold text-base sm:text-lg mb-2">
+                        <h3 className="font-orbitron text-green-400 font-bold text-base sm:text-lg mb-2">
                           IMAGE GALLERY
                         </h3>
                         <button
                           onClick={() => setShowSamples(false)}
-                          className="text-amber-400 text-xs transition-colors"
+                          className="text-amber-400 text-xs transition-colors font-mono"
                         >
                           &lt; BACK TO UPLOAD
                         </button>
@@ -241,7 +241,7 @@ export default function Component() {
                     <>
                       {isLoadingImage ? (
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <div className="text-green-400 font-geist-mono text-sm animate-pulse">LOADING IMAGE...</div>
+                          <div className="text-green-400 font-mono text-sm animate-pulse">LOADING IMAGE...</div>
                         </div>
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -250,7 +250,7 @@ export default function Component() {
                             <p className="text-base sm:text-lg lg:text-xl font-bold mb-2 text-green-400 font-orbitron">
                               INSERT IMAGE
                             </p>
-                            <p className="text-xs sm:text-sm text-amber-400 font-geist-mono">
+                            <p className="text-xs sm:text-sm text-amber-400 font-mono">
                               &gt; drag & drop or click to browse
                             </p>
                             <div className="mt-3 sm:mt-4">
@@ -304,7 +304,7 @@ export default function Component() {
 
             {/* Filename with better spacing */}
             {uploadedFileName && (
-              <p className="text-xs text-amber-400 mt-6 sm:mt-8 font-geist-mono opacity-70 text-center lg:text-left">
+              <p className="text-xs text-amber-400 mt-6 sm:mt-8 font-mono opacity-70 text-center lg:text-left">
                 &gt; {uploadedFileName.toUpperCase()}
               </p>
             )}
@@ -314,7 +314,7 @@ export default function Component() {
           <div className="space-y-4 sm:space-y-6 lg:space-y-8 slide-in-right delay-600 opacity-0">
             {/* Settings */}
             <div className="retro-panel slide-in-bottom delay-800 opacity-0">
-              <h3 className="retro-label mb-4">PARAMETERS</h3>
+              <h3 className="retro-label font-orbitron mb-4">PARAMETERS</h3>
               <div className="space-y-4 sm:space-y-6">
                 <div>
                   <label className="block retro-label mb-2">SPEED [{animationSpeed}]</label>
@@ -360,7 +360,7 @@ export default function Component() {
 
             {/* Effects */}
             <div className="retro-panel slide-in-bottom delay-900 opacity-0">
-              <h3 className="retro-label mb-4">EFFECT MODE</h3>
+              <h3 className="retro-label font-orbitron mb-4">EFFECT MODE</h3>
               <div className="space-y-2">
                 {[
                   { key: "subtle-shimmer", label: "SHIMMER" },
@@ -388,7 +388,7 @@ export default function Component() {
 
             {/* Export */}
             <div className="retro-panel slide-in-bottom delay-1200 opacity-0">
-              <h3 className="retro-label mb-4">RECORD OUTPUT</h3>
+              <h3 className="retro-label font-orbitron mb-4">RECORD OUTPUT</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block retro-label mb-2">DURATION [{recordingDuration} sec]</label>
@@ -456,7 +456,7 @@ export default function Component() {
         {/* Footer */}
         <footer className="mt-12 sm:mt-16 lg:mt-24 pt-6 sm:pt-8 border-t border-green-400/20 slide-in-bottom delay-1400 opacity-0">
           <div className="text-center">
-            <p className="text-xs text-amber-400 font-geist-mono tracking-wide">
+            <p className="text-xs text-amber-400 font-mono tracking-wide">
               &gt; CRAFTED WITH <span className="text-green-400 animate-pulse">💚</span> USING{" "}
               <a
                 href="https://v0.app"
