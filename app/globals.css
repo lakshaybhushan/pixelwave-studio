@@ -248,7 +248,7 @@
 }
 
 .retro-button:hover {
-  box-shadow: 0 0 15px currentColor;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
   transform: translateY(-1px);
 }
 
