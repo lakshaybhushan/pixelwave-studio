@@ -1,4 +1,4 @@
-import AnimatedDitherBackground from "../animated-dither-background"
+import AnimatedDitherBackground from "@/components/animated-dither-background"
 
 export default function Page() {
   return (

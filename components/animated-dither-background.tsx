@@ -4,10 +4,10 @@ import type React from "react"
 import { useRef, useState, useCallback, useEffect } from "react"
 import { Play, Pause, Upload, Video, Download, Volume2, VolumeX, ImageIcon, Power, Trash2 } from "lucide-react"
 
-import { useAudioManager } from "./components/audio-manager"
-import { useCanvasRenderer } from "./components/canvas-renderer"
-import { useImageLoader } from "./components/image-loader"
-import { useVideoRecorder } from "./components/video-recorder"
+import { useAudioManager } from "@/components/audio-manager"
+import { useCanvasRenderer } from "@/components/canvas-renderer"
+import { useImageLoader } from "@/components/image-loader"
+import { useVideoRecorder } from "@/components/video-recorder"
 
 type EffectType = "subtle-shimmer" | "wave-flow" | "twinkle" | "ascii" | "crt"
 
