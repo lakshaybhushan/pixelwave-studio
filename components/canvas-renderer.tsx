@@ -41,9 +41,39 @@ export function useCanvasRenderer({
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
+    // Get the actual display size of the canvas
+    const rect = canvas.getBoundingClientRect()
+    const displayWidth = rect.width
+    const displayHeight = rect.height
+
+    // Use higher internal resolution for better quality
+    // Scale factor based on device pixel ratio and minimum quality threshold
+    const pixelRatio = window.devicePixelRatio || 1
+    const minWidth = 800 // Minimum internal width for quality
+    const minHeight = 600 // Minimum internal height for quality
+
+    // Calculate scale factor to ensure minimum quality while being responsive
+    const scaleX = Math.max(1, minWidth / displayWidth)
+    const scaleY = Math.max(1, minHeight / displayHeight)
+    const scale = Math.max(scaleX, scaleY, pixelRatio)
+
+    // Set high internal resolution
+    const canvasWidth = Math.floor(displayWidth * scale)
+    const canvasHeight = Math.floor(displayHeight * scale)
+
+    canvas.width = canvasWidth
+    canvas.height = canvasHeight
+
+    // Scale the canvas back down to display size
+    canvas.style.width = `${displayWidth}px`
+    canvas.style.height = `${displayHeight}px`
+
+    // Scale the context to match the higher resolution
+    ctx.scale(scale, scale)
+
     if (!currentImage) {
       ctx.fillStyle = "#000000"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.fillRect(0, 0, displayWidth, displayHeight)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
         animationRef.current = undefined
@@ -53,27 +83,18 @@ export function useCanvasRenderer({
 
     const img = currentImage
 
-    // Fixed canvas size - always use the same dimensions
-    const canvasWidth = 800
-    const canvasHeight = 600
-
-    canvas.width = canvasWidth
-    canvas.height = canvasHeight
-    canvas.style.width = `${canvasWidth}px`
-    canvas.style.height = `${canvasHeight}px`
-
     let time = 0
     const asciiChars = " .:-=+*#%@".split("")
 
     const animate = () => {
-      // Fill entire canvas with black first
+      // Fill entire canvas with black first (using display dimensions)
       ctx.fillStyle = "#000000"
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+      ctx.fillRect(0, 0, displayWidth, displayHeight)
 
       // Show funny message when paused
       if (!isPlaying) {
         ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
-        const fontSize = Math.max(16, canvasWidth * 0.03)
+        const fontSize = Math.max(12, Math.min(displayWidth, displayHeight) * 0.04)
         ctx.font = `${fontSize}px monospace`
         ctx.textAlign = "center"
         ctx.textBaseline = "middle"
@@ -114,46 +135,60 @@ export function useCanvasRenderer({
         const messageIndex = Math.floor(Date.now() / 2000) % funnyMessages.length
         const message = funnyMessages[messageIndex]
 
-        ctx.fillText(message, canvasWidth / 2, canvasHeight / 2)
+        ctx.fillText(message, displayWidth / 2, displayHeight / 2)
 
         return
       }
 
-      // Draw image to fill entire canvas (cover behavior)
+      // Calculate proper image scaling to fit within canvas bounds with padding
       const imgAspect = img.width / img.height
-      const canvasAspect = canvasWidth / canvasHeight
+      const canvasAspect = displayWidth / displayHeight
+
+      // Add padding to ensure image doesn't touch edges - REDUCED from 5% to 2%
+      const padding = Math.min(displayWidth, displayHeight) * 0.02 // Reduced padding
+      const availableWidth = displayWidth - padding * 2
+      const availableHeight = displayHeight - padding * 2
 
       let drawWidth, drawHeight, offsetX, offsetY
 
-      if (imgAspect > canvasAspect) {
-        // Image is wider - fit to height
-        drawHeight = canvasHeight
-        drawWidth = drawHeight * imgAspect
-        offsetX = (canvasWidth - drawWidth) / 2
-        offsetY = 0
-      } else {
-        // Image is taller - fit to width
-        drawWidth = canvasWidth
+      if (imgAspect > availableWidth / availableHeight) {
+        // Image is wider relative to available space - fit to width
+        drawWidth = availableWidth
         drawHeight = drawWidth / imgAspect
-        offsetX = 0
-        offsetY = (canvasHeight - drawHeight) / 2
+        offsetX = padding
+        offsetY = padding + (availableHeight - drawHeight) / 2
+      } else {
+        // Image is taller relative to available space - fit to height
+        drawHeight = availableHeight
+        drawWidth = drawHeight * imgAspect
+        offsetX = padding + (availableWidth - drawWidth) / 2
+        offsetY = padding
       }
 
+      // Ensure the image fits completely within the canvas with padding
+      drawWidth = Math.min(drawWidth, availableWidth)
+      drawHeight = Math.min(drawHeight, availableHeight)
+
+      // Draw the image first to get pixel data (using display coordinates)
       ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight)
       const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight)
       const originalData = new Uint8ClampedArray(imageData.data)
 
       // Clear canvas again for effect rendering
       ctx.fillStyle = "#000000"
-      ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+      ctx.fillRect(0, 0, displayWidth, displayHeight)
 
+      // Use consistent effect parameters regardless of canvas resolution
       const dotSize = 2
       const spacing = effectType === "ascii" ? 8 : 3
 
-      // Process entire canvas area
-      for (let y = 0; y < canvasHeight; y += spacing) {
-        for (let x = 0; x < canvasWidth; x += spacing) {
-          const i = (y * canvasWidth + x) * 4
+      // Process using display coordinates but sample from high-res image data
+      for (let y = 0; y < displayHeight; y += spacing) {
+        for (let x = 0; x < displayWidth; x += spacing) {
+          // Sample from the high-resolution image data
+          const sampleX = Math.floor(x * scale)
+          const sampleY = Math.floor(y * scale)
+          const i = (sampleY * canvasWidth + sampleX) * 4
 
           if (i >= originalData.length) continue
 
@@ -201,8 +236,8 @@ export function useCanvasRenderer({
               const diagonalWave = Math.sin((x + y) * 0.006 + waveSpeed * 2.5) * 0.2
 
               // Circular wave from center
-              const centerX = canvasWidth / 2
-              const centerY = canvasHeight / 2
+              const centerX = displayWidth / 2
+              const centerY = displayHeight / 2
               const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2)
               const circularWave = Math.cos(distance * 0.02 - waveSpeed * 3) * 0.25
 
@@ -307,25 +342,25 @@ export function useCanvasRenderer({
       if (effectType === "crt") {
         ctx.strokeStyle = `rgba(0, 0, 0, ${0.25 + Math.sin(time * getActualSpeed(animationSpeed) * 0.5) * 0.1})`
         ctx.lineWidth = 1
-        for (let y = 0; y < canvasHeight; y += 2) {
+        for (let y = 0; y < displayHeight; y += 2) {
           ctx.beginPath()
           ctx.moveTo(0, y)
-          ctx.lineTo(canvasWidth, y)
+          ctx.lineTo(displayWidth, y)
           ctx.stroke()
         }
 
         const gradient = ctx.createRadialGradient(
-          canvasWidth / 2,
-          canvasHeight / 2,
-          Math.min(canvasWidth, canvasHeight) * 0.3,
-          canvasWidth / 2,
-          canvasHeight / 2,
-          Math.min(canvasWidth, canvasHeight) * 0.7,
+          displayWidth / 2,
+          displayHeight / 2,
+          Math.min(displayWidth, displayHeight) * 0.3,
+          displayWidth / 2,
+          displayHeight / 2,
+          Math.min(displayWidth, displayHeight) * 0.7,
         )
         gradient.addColorStop(0, "rgba(0,0,0,0)")
         gradient.addColorStop(1, "rgba(0,0,0,0.4)")
         ctx.fillStyle = gradient
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+        ctx.fillRect(0, 0, displayWidth, displayHeight)
       }
 
       time += 1

@@ -160,6 +160,13 @@
   overflow: hidden;
 }
 
+.crt-screen canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  object-fit: contain;
+}
+
 .crt-screen::before {
   content: "";
   position: absolute;

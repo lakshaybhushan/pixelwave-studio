@@ -156,14 +156,14 @@ export default function Component() {
       className="min-h-screen text-foreground font-orbitron transition-colors duration-300 page-fade-in"
       style={{ background: "hsl(var(--retro-bg))" }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:py-12">
         {/* Header */}
-        <div className="mb-8 sm:mb-12 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 slide-in-top delay-200 opacity-0">
+        <div className="mb-6 sm:mb-8 lg:mb-12 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 slide-in-top delay-200 opacity-0">
           <div>
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-black text-green-400 mb-3 tracking-wider">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-orbitron font-black text-green-400 mb-2 sm:mb-3 tracking-wider">
               PIXELWAVE STUDIO
             </h1>
-            <p className="text-base sm:text-lg text-amber-400 font-light max-w-2xl font-geist-mono">
+            <p className="text-sm sm:text-base lg:text-lg text-amber-400 font-light max-w-2xl font-geist-mono">
               &gt; Transform images into mesmerizing animated patterns using vintage dithering algorithms
             </p>
           </div>
@@ -173,10 +173,10 @@ export default function Component() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 sm:gap-12 lg:gap-12">
           {/* CRT Monitor with Integrated Controls */}
-          <div className="lg:col-span-2 max-w-4xl slide-in-left delay-400 opacity-0">
-            <div className="crt-container relative">
+          <div className="lg:col-span-2 w-full slide-in-left delay-400 opacity-0">
+            <div className="crt-container relative w-full">
               {/* TV Brand Label - Top Panel */}
               <div className="tv-top-panel">
                 <span className="text-xs text-gray-400 font-orbitron font-bold">RETRO-VISION</span>
@@ -184,12 +184,12 @@ export default function Component() {
 
               {/* Main Screen */}
               {currentImage && !showSamples ? (
-                <div className="crt-screen aspect-[4/3]">
-                  <canvas ref={canvasRef} className="w-full h-full block" />
+                <div className="crt-screen aspect-[4/3] w-full">
+                  <canvas ref={canvasRef} className="w-full h-full block object-contain" />
                 </div>
               ) : (
                 <div
-                  className={`crt-screen aspect-[4/3] cursor-pointer transition-all duration-200 ${
+                  className={`crt-screen aspect-[4/3] w-full cursor-pointer transition-all duration-200 ${
                     isDragOver ? "ring-2 ring-green-400 ring-offset-4 ring-offset-black" : ""
                   }`}
                   onDragOver={handleDragOver}
@@ -199,9 +199,11 @@ export default function Component() {
                 >
                   {/* Gallery View */}
                   {showSamples ? (
-                    <div className="absolute inset-0 p-6 overflow-y-auto">
+                    <div className="absolute inset-0 p-4 sm:p-6 overflow-y-auto">
                       <div className="text-center mb-4">
-                        <h3 className="text-green-400 font-orbitron font-bold text-lg mb-2">IMAGE GALLERY</h3>
+                        <h3 className="text-green-400 font-orbitron font-bold text-base sm:text-lg mb-2">
+                          IMAGE GALLERY
+                        </h3>
                         <button
                           onClick={() => setShowSamples(false)}
                           className="text-amber-400 text-xs transition-colors"
@@ -209,7 +211,7 @@ export default function Component() {
                           &lt; BACK TO UPLOAD
                         </button>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
                         {SAMPLE_IMAGES.map((sample) => (
                           <button
                             key={sample.id}
@@ -244,20 +246,20 @@ export default function Component() {
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="text-center px-4">
-                            <Upload className="w-12 sm:w-16 h-12 sm:h-16 mx-auto mb-4 sm:mb-6 text-green-400 opacity-60" />
-                            <p className="text-lg sm:text-xl font-bold mb-2 text-green-400 font-orbitron">
+                            <Upload className="w-10 sm:w-12 lg:w-16 h-10 sm:h-12 lg:h-16 mx-auto mb-3 sm:mb-4 lg:mb-6 text-green-400 opacity-60" />
+                            <p className="text-base sm:text-lg lg:text-xl font-bold mb-2 text-green-400 font-orbitron">
                               INSERT IMAGE
                             </p>
-                            <p className="text-sm text-amber-400 font-geist-mono">
+                            <p className="text-xs sm:text-sm text-amber-400 font-geist-mono">
                               &gt; drag & drop or click to browse
                             </p>
-                            <div className="mt-4">
+                            <div className="mt-3 sm:mt-4">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation()
                                   setShowSamples(true)
                                 }}
-                                className="retro-button px-4 py-2 rounded text-xs"
+                                className="retro-button px-3 sm:px-4 py-2 rounded text-xs"
                               >
                                 <ImageIcon className="w-4 h-4 mr-1 inline" />
                                 GALLERY
@@ -300,19 +302,20 @@ export default function Component() {
               </div>
             </div>
 
+            {/* Filename with better spacing */}
             {uploadedFileName && (
-              <p className="text-xs text-amber-400 mt-3 font-geist-mono opacity-70">
+              <p className="text-xs text-amber-400 mt-6 sm:mt-8 font-geist-mono opacity-70 text-center lg:text-left">
                 &gt; {uploadedFileName.toUpperCase()}
               </p>
             )}
           </div>
 
           {/* Control Panel */}
-          <div className="space-y-6 sm:space-y-8 slide-in-right delay-600 opacity-0">
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8 slide-in-right delay-600 opacity-0">
             {/* Settings */}
             <div className="retro-panel slide-in-bottom delay-800 opacity-0">
               <h3 className="retro-label mb-4">PARAMETERS</h3>
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div>
                   <label className="block retro-label mb-2">SPEED [{animationSpeed}]</label>
                   <input
@@ -451,7 +454,7 @@ export default function Component() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-16 sm:mt-24 pt-8 border-t border-green-400/20 slide-in-bottom delay-1400 opacity-0">
+        <footer className="mt-12 sm:mt-16 lg:mt-24 pt-6 sm:pt-8 border-t border-green-400/20 slide-in-bottom delay-1400 opacity-0">
           <div className="text-center">
             <p className="text-xs text-amber-400 font-geist-mono tracking-wide">
               &gt; CRAFTED WITH <span className="text-green-400 animate-pulse">💚</span> USING{" "}
