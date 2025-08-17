@@ -61,4 +61,3 @@ This project is open source and available under the [MIT License](LICENSE).
 ## Acknowledgments
 
 This project was completely made in [v0.app](https://v0.app), you can find the project [here](https://v0.app/chat/pixel-wave-studio-uSE9p11dsVA).
-
