@@ -56,13 +56,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
         <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-          <script
-          src="https://cdn.databuddy.cc/databuddy.js"
-          data-client-id="FnUpSkO8tniA1dsSzsprr"
-          data-enable-batching="true"
-          crossOrigin="anonymous"
-          async
-        />
+        <script src="https://cdn.databuddy.cc/databuddy.js" data-client-id="FnUpSkO8tniA1dsSzsprr" data-enable-batching="true" crossOrigin="anonymous" async></script>
       </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
